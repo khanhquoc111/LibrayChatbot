@@ -494,11 +494,15 @@ Từ khóa đã được để cập trước đó: ${
       if (reply?.data) {
         const assistantMessages = reply.data
           .filter((msg) => msg.role === "assistant")
-          .map((msg) => ({
-            id: uuidv4(),
-            type: "assistant",
-            text: msg.content[0].text.value,
-          })); // 👈 Lấy nội dung đúng định dạng
+          .map((msg) => {
+            const raw = msg.content[0].text.value;
+            const clean = raw.replace(/\*\*(.*?)\*\*/g, "$1");
+            return {
+              id: uuidv4(),
+              type: "assistant",
+              text: clean,
+            };
+          }); // 👈 Lấy nội dung đúng định dạng
 
         let chatbot = assistantMessages[0];
         console.log("🤖 Assistant replied:", chatbot);
